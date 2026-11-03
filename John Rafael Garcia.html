@@ -1,0 +1,214 @@
+<!doctype html><html><head><meta charset=utf8><meta name=viewport content="width=device-width,initial-scale=1,viewport-fit=cover"><style>:root{color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}html{scroll-padding-top:env(safe-area-inset-top,0px)}body{margin:0;padding:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif;background:#fff;color:#000}img{max-width:100%}[hidden]:not([hidden=until-found i]){display:none!important}</style></head><body>
+<title>John Rafael Garcia</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,700;12..96,800&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap">
+<style>
+/* Layout: one narrow column read like a server status page — each project is a "deployment" with its stack and state. */
+:root {
+  --bg: #f3f5f8; --surface: #ffffff; --ink: #141b2b; --muted: #5b6577; --line: #d9dee7;
+  --accent: #2346d8; --accent-soft: #e6ebfd; --ok: #1d8a52; --warn: #b5650c;
+  --fill: #fde9a8; --fill-ink: #5a4300;
+  --display: "Bricolage Grotesque", "Segoe UI", system-ui, sans-serif;
+  --body: "IBM Plex Sans", "Segoe UI", system-ui, sans-serif;
+  --mono: "IBM Plex Mono", ui-monospace, "Cascadia Mono", Menlo, monospace;
+}
+@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) {
+  --bg: #0f1420; --surface: #171e2d; --ink: #e8ecf4; --muted: #98a2b5; --line: #273046;
+  --accent: #8aa2ff; --accent-soft: #1d2747; --ok: #4cc485; --warn: #f0a24a;
+  --fill: #4a3b0c; --fill-ink: #ffe08a; color-scheme: dark; } }
+:root[data-theme="dark"] {
+  --bg: #0f1420; --surface: #171e2d; --ink: #e8ecf4; --muted: #98a2b5; --line: #273046;
+  --accent: #8aa2ff; --accent-soft: #1d2747; --ok: #4cc485; --warn: #f0a24a;
+  --fill: #4a3b0c; --fill-ink: #ffe08a; color-scheme: dark; }
+
+*,*::before,*::after { box-sizing: border-box; }
+body { background: var(--bg); color: var(--ink); font: 400 16px/1.6 var(--body); }
+.wrap { max-width: 880px; margin: 0 auto; padding-block: 56px 72px;
+  padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px));
+  display: grid; gap: 64px; }
+a { color: var(--accent); text-underline-offset: 3px; }
+a:focus-visible, button:focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; border-radius: 4px; }
+h1, h2, h3 { font-family: var(--display); text-wrap: balance; margin: 0; }
+p { margin: 0; }
+.label { font: 500 12px/1 var(--mono); letter-spacing: .08em; text-transform: uppercase; color: var(--muted); }
+
+.fill { background: var(--fill); color: var(--fill-ink); padding: 0 .3em; border-radius: 3px;
+  box-decoration-break: clone; -webkit-box-decoration-break: clone; }
+.note { font: 400 13px/1.5 var(--mono); color: var(--muted); margin-bottom: -40px; }
+
+/* hero */
+header { display: grid; gap: 20px; }
+.prompt { font: 400 14px/1.5 var(--mono); color: var(--muted); }
+.prompt b { color: var(--ok); font-weight: 500; }
+h1 { font-size: clamp(44px, 9vw, 84px); font-weight: 800; line-height: .95; letter-spacing: -.03em; }
+h1 span { color: var(--accent); }
+.lede { font-size: 19px; max-width: 58ch; color: var(--ink); }
+.meta { display: flex; flex-wrap: wrap; gap: 8px 20px; font: 400 14px/1.4 var(--mono); color: var(--muted); }
+.meta strong { color: var(--ink); font-weight: 500; }
+.status { display: inline-flex; align-items: center; gap: 10px; padding: 8px 14px; width: fit-content; max-width: 100%;
+  border: 1px solid var(--line); border-radius: 999px; background: var(--surface); font: 500 14px/1.3 var(--mono); }
+.dot { width: 9px; height: 9px; border-radius: 50%; background: var(--ok); box-shadow: 0 0 0 4px color-mix(in srgb, var(--ok) 22%, transparent); flex: none; }
+@media (prefers-reduced-motion: no-preference) { .dot { animation: pulse 2.4s ease-in-out infinite; } }
+@keyframes pulse { 50% { box-shadow: 0 0 0 7px color-mix(in srgb, var(--ok) 8%, transparent); } }
+
+section { display: grid; gap: 24px; }
+section > h2 { font-size: 28px; font-weight: 700; letter-spacing: -.01em; display: flex; align-items: baseline; gap: 14px; flex-wrap: wrap; }
+
+/* projects as deployments */
+.deploys { display: grid; border-top: 1px solid var(--line); }
+.deploy { display: grid; grid-template-columns: 170px 1fr; gap: 8px 28px; padding: 26px 0; border-bottom: 1px solid var(--line); }
+.deploy > * { min-width: 0; }
+.deploy aside { display: grid; gap: 10px; align-content: start; }
+.state { font: 500 13px/1 var(--mono); display: inline-flex; gap: 7px; align-items: center; }
+.state::before { content: ""; width: 8px; height: 8px; border-radius: 2px; background: currentColor; }
+.state.ok { color: var(--ok); } .state.wip { color: var(--warn); }
+.deploy h3 { font-size: 22px; font-weight: 700; line-height: 1.2; margin-bottom: 8px; }
+.deploy p { color: var(--muted); max-width: 62ch; }
+.chips { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 14px; }
+.chip { font: 500 12px/1 var(--mono); padding: 6px 9px; border-radius: 4px; background: var(--accent-soft); color: var(--accent); }
+.chip.fill { background: var(--fill); color: var(--fill-ink); }
+.more { margin-top: 14px; }
+.spec { margin-top: 14px; font: 400 13px/1.5 var(--mono); color: var(--muted); display: grid; gap: 2px; }
+.spec span { color: var(--ink); }
+
+/* skills */
+.stack { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1px; background: var(--line); border: 1px solid var(--line); border-radius: 8px; overflow: hidden; }
+.stack > div { background: var(--surface); padding: 20px; display: grid; gap: 10px; align-content: start; }
+.stack h3 { font-size: 17px; font-weight: 700; }
+.stack ul { list-style: none; margin: 0; padding: 0; display: grid; gap: 4px; font-size: 15px; color: var(--muted); }
+
+/* education + ojt */
+.two { display: grid; grid-template-columns: repeat(3, 1fr); gap: 24px; }
+.block { display: grid; gap: 8px; align-content: start; }
+.block h3 { font-size: 20px; font-weight: 700; }
+.block p { color: var(--muted); }
+.hours { font: 500 40px/1 var(--display); color: var(--accent); font-variant-numeric: tabular-nums; }
+
+/* contact */
+.contact { background: var(--ink); color: var(--bg); border-radius: 10px; padding: 32px; display: grid; gap: 18px; }
+.contact h2 { font-size: 30px; font-weight: 800; color: var(--bg); }
+.contact p { color: color-mix(in srgb, var(--bg) 75%, transparent); max-width: 52ch; }
+.links { display: flex; flex-wrap: wrap; gap: 10px; }
+.links a, .links span { text-decoration: none; font: 500 14px/1 var(--mono); padding: 11px 14px; border-radius: 6px; background: var(--bg); color: var(--ink); overflow-wrap: anywhere; }
+.links a.ghost, .links span.ghost { background: transparent; color: var(--bg); border: 1px solid color-mix(in srgb, var(--bg) 35%, transparent); }
+.links .fill { padding: 0 .3em; background: var(--fill); color: var(--fill-ink); }
+footer { font: 400 13px/1.5 var(--mono); color: var(--muted); }
+
+@media (max-width: 680px) {
+  .wrap { padding-block: 36px 56px; gap: 52px; }
+  .deploy { grid-template-columns: 1fr; }
+  .deploy aside { grid-auto-flow: column; justify-content: start; gap: 16px; }
+  .stack, .two { grid-template-columns: 1fr; }
+  .contact { padding: 24px; }
+}
+</style>
+
+<div class="wrap">
+
+  <header>
+    <p class="prompt"><b>rafael@auf</b>:~$ whoami</p>
+    <h1>John Rafael<br><span>Garcia</span></h1>
+    <p class="lede">BSIT student at Angeles University Foundation. I build web apps in PHP with Laravel and Yii on MySQL, and I'm trained in networking through Cisco Networking Academy (NEC01 and NEC02).</p>
+    <div class="meta">
+      <span>goes by <strong>Rafael</strong></span>
+      <span>based in <strong>Mabiga, Pampanga</strong></span>
+      <span>github <strong>@garciajohnrafael-del</strong></span>
+    </div>
+    <p class="status"><span class="dot" aria-hidden="true"></span>Open for OJT · starting December 2026</p>
+  </header>
+
+  <section aria-labelledby="work">
+    <h2 id="work">Projects <span class="label">3 deployments</span></h2>
+    <div class="deploys">
+
+      <article class="deploy">
+        <aside><span class="label">Web</span><span class="state ok">completed</span></aside>
+        <div>
+          <h3>Student Records System</h3>
+          <p>A Laravel web app for managing student records. Staff log in, add and edit student profiles, search by name or ID, and view records by year level, with all data stored in MySQL.</p>
+          <div class="spec">
+            <div>app&nbsp;&nbsp;&nbsp;<span>Laravel · PHP</span></div>
+            <div>db&nbsp;&nbsp;&nbsp;&nbsp;<span>MySQL</span></div>
+            <div>auth&nbsp;&nbsp;<span>login with user roles</span></div>
+          </div>
+          <div class="chips"><span class="chip">Laravel</span><span class="chip">PHP</span><span class="chip">MySQL</span><span class="chip">CRUD</span></div>
+        </div>
+      </article>
+
+      <article class="deploy">
+        <aside><span class="label">Network · NEC01</span><span class="state ok">completed</span></aside>
+        <div>
+          <h3>Small office network with VLANs</h3>
+          <p>Designed a network for a three-department office in Cisco Packet Tracer. Split the departments into separate VLANs, set up inter-VLAN routing on one router, and had the router hand out IP addresses with DHCP. Tested every link with ping.</p>
+          <div class="spec">
+            <div>vlans&nbsp;&nbsp;<span>10 Admin · 20 Faculty · 30 Lab</span></div>
+            <div>route&nbsp;&nbsp;<span>router-on-a-stick</span></div>
+            <div>ip&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span>DHCP per VLAN</span></div>
+          </div>
+          <div class="chips"><span class="chip">Packet Tracer</span><span class="chip">VLANs</span><span class="chip">DHCP</span></div>
+        </div>
+      </article>
+
+      <article class="deploy">
+        <aside><span class="label">Network · NEC02</span><span class="state ok">completed</span></aside>
+        <div>
+          <h3>Two-branch network with OSPF</h3>
+          <p>Connected a main office and a branch office over a WAN link. Subnetted the address space with VLSM, ran OSPF so the routers share routes on their own, and added an access list so only the admin network can reach the server.</p>
+          <div class="spec">
+            <div>sites&nbsp;&nbsp;<span>main office · branch</span></div>
+            <div>route&nbsp;&nbsp;<span>OSPF single area</span></div>
+            <div>secure <span>standard ACL on server LAN</span></div>
+          </div>
+          <div class="chips"><span class="chip">Packet Tracer</span><span class="chip">OSPF</span><span class="chip">VLSM</span><span class="chip">ACL</span></div>
+        </div>
+      </article>
+
+    </div>
+  </section>
+
+  <section aria-labelledby="skills">
+    <h2 id="skills">Stack</h2>
+    <div class="stack">
+      <div><h3>Networking</h3><ul><li>Cisco Networking Academy</li><li>NEC01 and NEC02</li><li>VLANs and inter-VLAN routing</li><li>Subnetting, OSPF, DHCP, ACLs</li></ul></div>
+      <div><h3>Coding &amp; web</h3><ul><li>PHP</li><li>Laravel</li><li>Yii</li><li>HTML, CSS, JavaScript</li><li>MySQL</li></ul></div>
+      <div><h3>Tools</h3><ul><li>Git and GitHub</li><li>Cisco Packet Tracer</li></ul></div>
+    </div>
+  </section>
+
+  <section aria-labelledby="edu">
+    <h2 id="edu">Education, training &amp; OJT</h2>
+    <div class="two">
+      <div class="block">
+        <span class="label">2026 – 2027</span>
+        <h3>BS Information Technology</h3>
+        <p>Angeles University Foundation, College of Computer Studies. 4th year.</p>
+      </div>
+      <div class="block">
+        <span class="label">Training</span>
+        <span class="state ok">completed</span>
+        <h3>Cisco NEC01 &amp; NEC02</h3>
+        <p>Networking courses through Cisco Networking Academy.</p>
+      </div>
+      <div class="block">
+        <span class="label">Internship</span>
+        <div class="hours">480 hrs</div>
+        <p>Looking for an IT team for my OJT, starting December 2026. Interested in web development and networking work.</p>
+      </div>
+    </div>
+  </section>
+
+  <section class="contact" aria-labelledby="contact">
+    <h2 id="contact">Let's work together</h2>
+    <p>If your team takes OJT students or needs help with a web or cloud project, I'd like to hear from you.</p>
+    <div class="links">
+      <a href="https://github.com/garciajohnrafael-del" target="_blank" rel="noopener">github.com/garciajohnrafael-del</a>
+      <a class="ghost" href="https://www.linkedin.com/in/john-rafael-garcia-41629037b/" target="_blank" rel="noopener">LinkedIn</a>
+      <span class="ghost">johnrafaelgarcia8@gmail.com</span>
+    </div>
+  </section>
+
+  <footer>© 2026 John Rafael Garcia · Mabiga, Pampanga</footer>
+</div>
+
+</body></html>
